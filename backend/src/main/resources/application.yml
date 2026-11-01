@@ -11,3 +11,12 @@ spring:
     open-in-view: false
   flyway:
     enabled: true
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+jwt:
+  secret: ${JWT_SECRET:dev-only-secret-change-me-please-32chars-min}
+  expiration-ms: 3600000
+logging:
+  level:
+    org.springdoc: DEBUG

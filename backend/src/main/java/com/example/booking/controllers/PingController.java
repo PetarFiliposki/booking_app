@@ -21,4 +21,6 @@ public class PingController {
                 "users", userRepository.count()
         );
     }
+
+
 }
