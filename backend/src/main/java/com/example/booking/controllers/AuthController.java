@@ -1,11 +1,11 @@
 package com.example.booking.controllers;
 
 
-import com.example.booking.user.UserService;
-import com.example.booking.user.dto.AuthResponse;
-import com.example.booking.user.dto.LoginRequest;
-import com.example.booking.user.dto.RegisterRequest;
-import com.example.booking.user.dto.UserResponse;
+import com.example.booking.service.UserService;
+import com.example.booking.dto.user.AuthResponse;
+import com.example.booking.dto.user.LoginRequest;
+import com.example.booking.dto.user.RegisterRequest;
+import com.example.booking.dto.user.UserResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,5 +1,6 @@
-package com.example.booking.user;
+package com.example.booking.repository;
 
+import com.example.booking.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

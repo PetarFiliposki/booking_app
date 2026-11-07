@@ -1,12 +1,15 @@
-package com.example.booking.user;
+package com.example.booking.service;
 
 
+import com.example.booking.entity.Role;
+import com.example.booking.entity.User;
 import com.example.booking.exceptions.EmailAlreadyExistsException;
+import com.example.booking.repository.UserRepository;
 import com.example.booking.security.JwtService;
-import com.example.booking.user.dto.AuthResponse;
-import com.example.booking.user.dto.LoginRequest;
-import com.example.booking.user.dto.RegisterRequest;
-import com.example.booking.user.dto.UserResponse;
+import com.example.booking.dto.user.AuthResponse;
+import com.example.booking.dto.user.LoginRequest;
+import com.example.booking.dto.user.RegisterRequest;
+import com.example.booking.dto.user.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

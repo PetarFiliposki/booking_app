@@ -1,0 +1,40 @@
+### 1. Регистрација
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "marko@mail.com",
+  "password": "lozinka123",
+  "fullName": "Marko Markovski"
+}
+
+### 2. Login (од одговорот копирајте го "token")
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "marko@mail.com",
+  "password": "lozinka123"
+}
+
+### 3. Погрешна лозинка (очекувано 401)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "marko@mail.com",
+  "password": "pogresna"
+}
+
+### 4. Без токен (очекувано 401)
+GET http://localhost:8080/api/users/me
+
+### 5. Со токен (залепете го токенот наместо ТОКЕН)
+GET http://localhost:8080/api/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJrb0BtYWlsLmNvbSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc5MzU1OTUwMCwiZXhwIjoxNzkzNTYzMTAwfQ.TWWPIG6-gQS13_8ba8r3OTYQFTbJwglGqo_-NGCqlso
+
+###
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{ "email": "owner@mail.com", "password": "lozinka123", "fullName": "Owner Test" }

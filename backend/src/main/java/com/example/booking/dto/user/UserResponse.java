@@ -1,7 +1,7 @@
-package com.example.booking.user.dto;
+package com.example.booking.dto.user;
 
-import com.example.booking.user.Role;
-import com.example.booking.user.User;
+import com.example.booking.entity.Role;
+import com.example.booking.entity.User;
 
 public record UserResponse(Long id, String email, String fullName, Role role) {
     public static UserResponse from(User user){

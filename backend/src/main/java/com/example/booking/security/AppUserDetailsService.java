@@ -1,7 +1,7 @@
 package com.example.booking.security;
 
-import com.example.booking.user.User;
-import com.example.booking.user.UserRepository;
+import com.example.booking.entity.User;
+import com.example.booking.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

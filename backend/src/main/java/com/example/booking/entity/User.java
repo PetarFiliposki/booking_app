@@ -1,4 +1,4 @@
-package com.example.booking.user;
+package com.example.booking.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
