@@ -1,9 +1,11 @@
 package com.example.booking.service;
 
 import com.example.booking.dto.workinghours.AvailabilityResponse;
+import com.example.booking.entity.BookingStatus;
 import com.example.booking.entity.ServiceOffering;
 import com.example.booking.entity.WorkingHours;
 import com.example.booking.exceptions.NotFoundException;
+import com.example.booking.repository.BookingRepository;
 import com.example.booking.repository.BusinessRepository;
 import com.example.booking.repository.ServiceOfferingRepository;
 import com.example.booking.repository.WorkingHoursRepository;
@@ -11,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,7 @@ public class AvailabilityService {
     private final BusinessRepository businessRepository;
     private final ServiceOfferingRepository serviceRepository;
     private final WorkingHoursRepository workingHoursRepository;
+    private final BookingRepository bookingRepository;
 
     @Transactional(readOnly = true)
     public AvailabilityResponse getAvailability(Long businessId, Long serviceId, LocalDate date) {
@@ -55,7 +55,16 @@ public class AvailabilityService {
                     && start.plusMinutes(duration).isAfter(start)) {
 
                 LocalDateTime candidate = LocalDateTime.of(date, start);
-                if (candidate.isAfter(now)) {
+                Instant slotStart = candidate.atZone(ZONE).toInstant();
+                Instant slotEnd = slotStart.plusSeconds(duration * 60L);
+
+                boolean inFuture = candidate.isAfter(now);
+                boolean free = bookingRepository
+                        .findByBusinessIdAndStatusAndStartTimeLessThanAndEndTimeGreaterThan(
+                                businessId, BookingStatus.CONFIRMED, slotEnd, slotStart)
+                        .isEmpty();
+
+                if (inFuture && free) {
                     slots.add(start);
                 }
                 start = start.plusMinutes(SLOT_STEP_MINUTES);

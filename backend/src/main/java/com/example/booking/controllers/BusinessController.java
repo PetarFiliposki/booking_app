@@ -1,5 +1,7 @@
 package com.example.booking.controllers;
 
+import com.example.booking.dto.booking.BookingRequest;
+import com.example.booking.dto.booking.BookingResponse;
 import com.example.booking.dto.business.BusinessRequest;
 import com.example.booking.dto.business.BusinessResponse;
 import com.example.booking.dto.services.ServiceRequest;
@@ -8,6 +10,7 @@ import com.example.booking.dto.workinghours.AvailabilityResponse;
 import com.example.booking.dto.workinghours.WorkingHoursRequest;
 import com.example.booking.dto.workinghours.WorkingHoursResponse;
 import com.example.booking.service.AvailabilityService;
+import com.example.booking.service.BookingService;
 import com.example.booking.service.BusinessService;
 import com.example.booking.service.WorkingHoursService;
 import jakarta.validation.Valid;
@@ -31,6 +34,7 @@ public class BusinessController {
     private final BusinessService businessService;
     private final WorkingHoursService workingHoursService;
     private final AvailabilityService availabilityService;
+    private final BookingService bookingService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -82,5 +86,12 @@ public class BusinessController {
                                              @RequestParam Long serviceId,
                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return availabilityService.getAvailability(id, serviceId, date);
+    }
+    @PostMapping("/{id}/bookings")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BookingResponse book(@AuthenticationPrincipal UserDetails principal,
+                                @PathVariable Long id,
+                                @Valid @RequestBody BookingRequest req) {
+        return bookingService.create(principal.getUsername(), id, req);
     }
 }
