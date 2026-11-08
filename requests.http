@@ -1,40 +1,99 @@
-### 1. Регистрација
+### 1. Register customer
 POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
-{
-  "email": "marko@mail.com",
-  "password": "lozinka123",
-  "fullName": "Marko Markovski"
-}
+{ "email": "marko@mail.com", "password": "lozinka123", "fullName": "Marko" }
 
-### 2. Login (од одговорот копирајте го "token")
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
-
-{
-  "email": "marko@mail.com",
-  "password": "lozinka123"
-}
-
-### 3. Погрешна лозинка (очекувано 401)
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
-
-{
-  "email": "marko@mail.com",
-  "password": "pogresna"
-}
-
-### 4. Без токен (очекувано 401)
-GET http://localhost:8080/api/users/me
-
-### 5. Со токен (залепете го токенот наместо ТОКЕН)
-GET http://localhost:8080/api/users/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJrb0BtYWlsLmNvbSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc5MzU1OTUwMCwiZXhwIjoxNzkzNTYzMTAwfQ.TWWPIG6-gQS13_8ba8r3OTYQFTbJwglGqo_-NGCqlso
-
-###
+### 2. Register owner
 POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
-{ "email": "owner@mail.com", "password": "lozinka123", "fullName": "Owner Test" }
+{ "email": "owner@mail.com", "password": "lozinka123", "fullName": "Owner" }
+
+### 3. Login customer
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{ "email": "marko@mail.com", "password": "lozinka123" }
+
+### 4. Login owner
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{ "email": "owner@mail.com", "password": "lozinka123" }
+
+### 5. Business (owner) -> 201
+POST http://localhost:8080/api/businesses
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBtYWlsLmNvbSIsInJvbGUiOiJCVVNJTkVTU19PV05FUiIsImlhdCI6MTc5NDE1MTcxNSwiZXhwIjoxNzk0MTU1MzE1fQ.-RGUnbdXKzzdlSrMpTgB81GKzYv51L1CW7CVxCWqh3s
+Content-Type: application/json
+
+{ "name": "Салон Ана", "description": "Фризер", "address": "Скопје", "phone": "070123456" }
+
+### 6. Offering -> 201
+POST http://localhost:8080/api/businesses/1/services
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBtYWlsLmNvbSIsInJvbGUiOiJCVVNJTkVTU19PV05FUiIsImlhdCI6MTc5NDE1MTcxNSwiZXhwIjoxNzk0MTU1MzE1fQ.-RGUnbdXKzzdlSrMpTgB81GKzYv51L1CW7CVxCWqh3s
+Content-Type: application/json
+
+{ "name": "Шишање", "durationMinutes": 30, "price": 400 }
+
+### 7. Business како customer -> 403
+POST http://localhost:8080/api/businesses
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJrb0BtYWlsLmNvbSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc5NDE1MTQ2MiwiZXhwIjoxNzk0MTU1MDYyfQ.Ah1MnMYiEq7XRGLL71NjHov-SO0Ml8ER0X1wdqNimto
+Content-Type: application/json
+
+{ "name": "Не смее" }
+
+### 8. Јавна листа -> 200
+GET http://localhost:8080/api/businesses
+
+### 9. Работно време: понеделник -> 200
+PUT http://localhost:8080/api/businesses/1/working-hours
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBtYWlsLmNvbSIsInJvbGUiOiJCVVNJTkVTU19PV05FUiIsImlhdCI6MTc5NDE1MTcxNSwiZXhwIjoxNzk0MTU1MzE1fQ.-RGUnbdXKzzdlSrMpTgB81GKzYv51L1CW7CVxCWqh3s
+Content-Type: application/json
+
+{ "dayOfWeek": 1, "openTime": "09:00", "closeTime": "17:00" }
+
+### 10. Availability: следен понеделник 2026-11-09 -> 09:00 ... 16:30
+GET http://localhost:8080/api/businesses/1/availability?serviceId=1&date=2026-11-09
+
+### 11. Резервација -> 201
+POST http://localhost:8080/api/businesses/1/bookings
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBtYWlsLmNvbSIsInJvbGUiOiJCVVNJTkVTU19PV05FUiIsImlhdCI6MTc5NDE1MTcxNSwiZXhwIjoxNzk0MTU1MzE1fQ.-RGUnbdXKzzdlSrMpTgB81GKzYv51L1CW7CVxCWqh3s
+Content-Type: application/json
+
+{ "serviceId": 1, "date": "2026-11-09", "time": "10:00" }
+
+### 12. Ист термин -> 409
+POST http://localhost:8080/api/businesses/1/bookings
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBtYWlsLmNvbSIsInJvbGUiOiJCVVNJTkVTU19PV05FUiIsImlhdCI6MTc5NDE1MTcxNSwiZXhwIjoxNzk0MTU1MzE1fQ.-RGUnbdXKzzdlSrMpTgB81GKzYv51L1CW7CVxCWqh3s
+Content-Type: application/json
+
+{ "serviceId": 1, "date": "2026-11-09", "time": "10:00" }
+
+### 13. Преклопување -> 409
+POST http://localhost:8080/api/businesses/1/bookings
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBtYWlsLmNvbSIsInJvbGUiOiJCVVNJTkVTU19PV05FUiIsImlhdCI6MTc5NDE1MTcxNSwiZXhwIjoxNzk0MTU1MzE1fQ.-RGUnbdXKzzdlSrMpTgB81GKzYv51L1CW7CVxCWqh3s
+Content-Type: application/json
+
+{ "serviceId": 1, "date": "2026-11-09", "time": "10:15" }
+
+### 14. Availability пак: нема 09:45, 10:00, 10:15
+GET http://localhost:8080/api/businesses/1/availability?serviceId=1&date=2026-11-09
+
+### 15. Надвор од работно време -> 400
+POST http://localhost:8080/api/businesses/1/bookings
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBtYWlsLmNvbSIsInJvbGUiOiJCVVNJTkVTU19PV05FUiIsImlhdCI6MTc5NDE1MTcxNSwiZXhwIjoxNzk0MTU1MzE1fQ.-RGUnbdXKzzdlSrMpTgB81GKzYv51L1CW7CVxCWqh3s
+Content-Type: application/json
+
+{ "serviceId": 1, "date": "2026-11-09", "time": "18:00" }
+
+### 16. Мои резервации -> 200
+GET http://localhost:8080/api/bookings/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBtYWlsLmNvbSIsInJvbGUiOiJCVVNJTkVTU19PV05FUiIsImlhdCI6MTc5NDE1MTcxNSwiZXhwIjoxNzk0MTU1MzE1fQ.-RGUnbdXKzzdlSrMpTgB81GKzYv51L1CW7CVxCWqh3s
+
+### 17. Откажи -> 200
+POST http://localhost:8080/api/bookings/1/cancel
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvd25lckBtYWlsLmNvbSIsInJvbGUiOiJCVVNJTkVTU19PV05FUiIsImlhdCI6MTc5NDE1MTcxNSwiZXhwIjoxNzk0MTU1MzE1fQ.-RGUnbdXKzzdlSrMpTgB81GKzYv51L1CW7CVxCWqh3s
+
+### 18. Без токен -> 401
+GET http://localhost:8080/api/users/me

@@ -135,7 +135,7 @@ class BookingIntegrationTest {
             executor.submit(() -> {
                 ready.countDown();
                 try {
-                    start.await();                       // сите чекаат на истиот сигнал
+                    start.await();
                     bookingService.create(email, business.getId(), req);
                     success.incrementAndGet();
                 } catch (SlotUnavailableException e) {
@@ -145,7 +145,7 @@ class BookingIntegrationTest {
         }
 
         ready.await();
-        start.countDown();                               // старт на сите одеднаш
+        start.countDown();
         executor.shutdown();
         executor.awaitTermination(30, java.util.concurrent.TimeUnit.SECONDS);
 

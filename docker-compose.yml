@@ -10,6 +10,19 @@ services:
       - "5433:5432"
     volumes:
       - booking-db-data:/var/lib/postgresql/data
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/booking
+      SPRING_DATASOURCE_USERNAME: booking
+      SPRING_DATASOURCE_PASSWORD: booking
+      JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me-please-32chars-min}
+    ports:
+      - "8080:8080"
+
 
 volumes:
   booking-db-data:
