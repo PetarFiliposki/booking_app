@@ -17,6 +17,7 @@ export default function Navbar() {
             {getToken() ? (
                 <>
                     <Link to="/my-bookings">Мои резервации</Link>
+                    {user?.role === "BUSINESS_OWNER" && <Link to="/owner">Табла</Link>}
                     <span style={{ marginLeft: "auto" }}>{user?.fullName}</span>
                     <button onClick={handleLogout}>Одјава</button>
                 </>

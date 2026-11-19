@@ -12,7 +12,7 @@ import com.example.booking.exceptions.NotFoundException;
 import com.example.booking.repository.BusinessRepository;
 import com.example.booking.repository.ServiceOfferingRepository;
 import com.example.booking.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -72,5 +72,12 @@ public class BusinessService {
     private Business find(Long id) {
         return businessRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Бизнисот не постои"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<BusinessResponse> listMine(String ownerEmail) {
+        User owner = userRepository.findByEmail(ownerEmail).orElseThrow();
+        return businessRepository.findByOwnerId(owner.getId())
+                .stream().map(BusinessResponse::from).toList();
     }
 }

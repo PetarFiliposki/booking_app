@@ -2,6 +2,7 @@ package com.example.booking.service;
 
 import com.example.booking.dto.booking.BookingRequest;
 import com.example.booking.dto.booking.BookingResponse;
+import com.example.booking.dto.business.BusinessResponse;
 import com.example.booking.entity.*;
 import com.example.booking.exceptions.*;
 import com.example.booking.repository.*;
@@ -43,7 +44,6 @@ public class BookingService {
             throw new BadRequestException("Терминот е во минатото");
         }
 
-        // мора да е во работно време
         WorkingHours wh = workingHoursRepository
                 .findByBusinessIdAndDayOfWeek(businessId, req.date().getDayOfWeek().getValue())
                 .orElseThrow(() -> new BadRequestException("Бизнисот не работи тој ден"));
@@ -63,7 +63,6 @@ public class BookingService {
         booking.setStatus(BookingStatus.CONFIRMED);
 
         try {
-            // saveAndFlush го праќа INSERT веднаш, па ограничувањето во базата се проверува тука
             return BookingResponse.from(bookingRepository.saveAndFlush(booking));
         } catch (DataIntegrityViolationException e) {
             throw new SlotUnavailableException("Терминот е веќе зафатен");
@@ -90,7 +89,6 @@ public class BookingService {
         if (b.getStatus() == BookingStatus.CANCELLED) {
             throw new BadRequestException("Резервацијата е веќе откажана");
         }
-        // правило: клиентот не може да откаже помалку од 2 часа пред терминот
         if (isCustomer && !isOwner
                 && Instant.now().isAfter(b.getStartTime().minusSeconds(2 * 3600))) {
             throw new BadRequestException("Не може да се откаже помалку од 2 часа пред терминот");
@@ -98,4 +96,15 @@ public class BookingService {
         b.setStatus(BookingStatus.CANCELLED);
         return BookingResponse.from(b);
     }
+    @Transactional(readOnly = true)
+    public List<BookingResponse> businessBookings(String ownerEmail, Long businessId) {
+        Business b = businessRepository.findById(businessId)
+                .orElseThrow(() -> new NotFoundException("Бизнисот не постои"));
+        if (!b.getOwner().getEmail().equals(ownerEmail)) {
+            throw new ForbiddenException("Не сте сопственик на овој бизнис");
+        }
+        return bookingRepository.findByBusinessIdOrderByStartTimeDesc(businessId)
+                .stream().map(BookingResponse::from).toList();
+    }
+
 }

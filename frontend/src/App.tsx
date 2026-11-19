@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Businesses from "./pages/Businesses";
 import Business from "./pages/Business";
 import MyBookings from "./pages/MyBookings";
+import Owner from "./pages/Owner.tsx";
 
 export default function App() {
     return (
@@ -16,6 +17,7 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/business/:id" element={<Business />} />
                 <Route path="/my-bookings" element={<MyBookings />} />
+                <Route path="/owner" element={<Owner />} />
             </Routes>
         </BrowserRouter>
     );

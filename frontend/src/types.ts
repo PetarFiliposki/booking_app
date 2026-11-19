@@ -44,3 +44,9 @@ export interface Booking {
     endTime: string;
     status: string;
 }
+export interface WorkingHours {
+    id: number;
+    dayOfWeek: number;
+    openTime: string;
+    closeTime: string;
+}

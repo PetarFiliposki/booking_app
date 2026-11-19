@@ -11,4 +11,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByBusinessIdAndStatusAndStartTimeLessThanAndEndTimeGreaterThan(Long businessId, BookingStatus status, Instant to, Instant from);
     List<Booking> findByCustomerIdOrderByStartTimeDesc(Long customerId);
+    List<Booking> findByBusinessIdOrderByStartTimeDesc(Long businessId);
 }

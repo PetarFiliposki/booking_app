@@ -94,4 +94,15 @@ public class BusinessController {
                                 @Valid @RequestBody BookingRequest req) {
         return bookingService.create(principal.getUsername(), id, req);
     }
+    @GetMapping("/{id}/bookings")
+    @PreAuthorize("hasRole('BUSINESS_OWNER')")
+    public List<BookingResponse> businessBookings(@AuthenticationPrincipal UserDetails principal,
+                                                  @PathVariable Long id) {
+        return bookingService.businessBookings(principal.getUsername(), id);
+    }
+    @GetMapping("/mine")
+    @PreAuthorize("hasRole('BUSINESS_OWNER')")
+    public List<BusinessResponse> mine(@AuthenticationPrincipal UserDetails principal) {
+        return businessService.listMine(principal.getUsername());
+    }
 }
